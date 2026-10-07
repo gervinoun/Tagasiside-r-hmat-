@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="et">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kõik hinded</title>
+<h1>Kõik hinded</h1>
+<a href="opilasevaade.html">Lisa tagasiside</a>
+<p role="status"></p>
+<table>
+  <thead><tr><th>ID</th><th>Eesnimi</th><th>Perenimi</th><th>Grupp</th><th>Hinne</th><th>Kommentaar</th></tr></thead>
+  <tbody></tbody>
+</table>
+<script>
+(async () => {
+  const status = document.querySelector('[role=status]');
+  try {
+    const response = await fetch('/scores');
+    if (!response.ok) throw new Error(await response.text());
+    const scores = await response.json();
+    for (const score of scores) {
+      const row = document.querySelector('tbody').insertRow();
+      for (const key of ['id', 'eesnimi', 'perenimi', 'grupp', 'hinne', 'kommentaar']) row.insertCell().textContent = score[key];
+    }
+    if (!scores.length) status.textContent = 'Hindeid pole veel.';
+  } catch (error) { status.textContent = error.message; }
+})();
+</script>
+</html>

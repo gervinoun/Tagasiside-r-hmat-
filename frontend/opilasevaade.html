@@ -1,35 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>
-        Tagasiside
-    </h1>
-
-    <label for="eesnimi">Eesnimi</label><br>
-    <input type="text" id="eesnimi" name="eesnimi"><br>
-    <label for="perekonnanimi">Perekonnanimi</label><br>
-    <input type="text" id="perekonnanimi" name="perekonnanimi"><br>
-    <label for="aine">Õppeaine</label><br>
-    <input type="text" id="aine" name="aine"><br>
-    <label for="1">1</label>
-    <input type="checkbox" id="1">
-    <label for="2">2</label>
-    <input type="checkbox" id="2">
-    <label for="3">3</label>
-    <input type="checkbox" id="3">
-    <label for="4">4</label>
-    <input type="checkbox" id="4">
-    <label for="5">5</label>
-    <input type="checkbox" id="5">
-    <br>
-    <label for="kommentaar">Lisa Kommentaar</label><br>
-    <input type="text" id="kommentaar" name="kommentaar"><br>
-
-   <input type="submit" >
-</body>
+<!doctype html>
+<html lang="et">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tagasiside</title>
+<h1>Tagasiside</h1>
+<form>
+  <label>Eesnimi <input name="eesnimi" maxlength="255" required></label><br>
+  <label>Perenimi <input name="perenimi" maxlength="255" required></label><br>
+  <label>Grupp <input name="grupp" maxlength="255" required></label><br>
+  <label>Hinne <input name="hinne" type="number" min="1" max="5" step="1" required></label><br>
+  <label>Kommentaar <input name="kommentaar" maxlength="255"></label><br>
+  <button>Saada</button>
+</form>
+<p role="status"></p>
+<a href="opetajavaade.html">Vaata kõiki hindeid</a>
+<script>
+const form = document.querySelector('form'), status = document.querySelector('[role=status]');
+form.onsubmit = async event => {
+  event.preventDefault();
+  form.querySelector('button').disabled = true;
+  try {
+    const data = Object.fromEntries(new FormData(form));
+    data.hinne = Number(data.hinne);
+    const response = await fetch('/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    if (!response.ok) throw new Error(await response.text());
+    form.reset();
+    status.textContent = 'Salvestatud.';
+  } catch (error) { status.textContent = error.message; }
+  form.querySelector('button').disabled = false;
+};
+</script>
 </html>
